@@ -1,25 +1,3 @@
-rbst-lite
-=========
-this package will provide a javascript implementation of randomized-binary-search-tree derived from http://kukuruku.co/hub/cpp/randomized-binary-search-trees with zero npm-dependencies
-
-[![travis-ci.org build-status](https://api.travis-ci.org/kaizhu256/node-rbst-lite.svg)](https://travis-ci.org/kaizhu256/node-rbst-lite)
-
-[![NPM](https://nodei.co/npm/rbst-lite.png?downloads=true)](https://www.npmjs.com/package/rbst-lite)
-
-[![package-listing](https://kaizhu256.github.io/node-rbst-lite/build/screen-capture.gitLsTree.svg)](https://github.com/kaizhu256/node-rbst-lite)
-
-
-
-#### todo
-- none
-
-#### change since 9fe8c225
-- npm publish 2016.9.1
-- none
-
-
-
-```javascript
 /*
  * rbst-lite.js
  * https://github.com/kaizhu256/node-rbst-lite
@@ -556,4 +534,3 @@ this package will provide a javascript implementation of randomized-binary-searc
         testRun();
     }());
 }());
-```

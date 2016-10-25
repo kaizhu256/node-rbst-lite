@@ -1,0 +1,32 @@
+{
+    "package.json": true,
+    "author": "kaizhu256@gmail.com",
+    "bugs": {
+        "url": "https://github.com/kaizhu256/node-rbst-lite/issues"
+    },
+    "description": "this package will provide a javascript implementation of randomized-binary-search-tree derived from http://kukuruku.co/hub/cpp/randomized-binary-search-trees with zero npm-dependencies",
+    "devDependencies": {
+        "electron-lite": "kaizhu256/node-electron-lite#alpha",
+        "utility2": "kaizhu256/node-utility2#alpha"
+    },
+    "homepage": "https://github.com/kaizhu256/node-rbst-lite",
+    "keywords": [
+        "binary-search-tree", "bst",
+        "heap",
+        "randomized-binary-search-tree", "rbst",
+        "self-balancing",
+        "treap"
+    ],
+    "license": "MIT",
+    "name": "rbst-lite",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/kaizhu256/node-rbst-lite.git"
+    },
+    "scripts": {
+        "build-ci": "npm test",
+        "start": "utility2 start index.js",
+        "test": "utility2-istanbul cover index.js"
+    },
+    "version": "2016.10.09"
+}
