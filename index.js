@@ -25,25 +25,38 @@
 */
 (function () {
     'use strict';
+    var local;
+    local = {};
+    // globally export local
+    /* istanbul ignore next */
+    if (typeof global === 'object' && global) {
+        global.rbst_lite = local;
+    }
+    /* istanbul ignore next */
+    if (typeof module === 'object' && module) {
+        module.exports = local;
+    }
+    /* istanbul ignore next */
+    if (typeof window === 'object' && window) {
+        window.rbst_lite = local;
+    }
 
 
 
-    // run shared js-env code - lib
-    (function () {
+    // run shared js-env code - lib.rbst.js
+    (function (local) {
         var compare,
             create,
             find,
             findInKeyRange,
-            fixsize,
-            getsize,
             insert,
-            insertRoot,
+            insertAsRoot,
             join,
-            local,
             print,
             remove,
             rotateLeft,
-            rotateRight;
+            rotateRight,
+            sizeUpdate;
 
         compare = function (aa, bb) {
         /*
@@ -52,11 +65,18 @@
          *  0 if aa === bb
          *  1 if aa > bb
          * the priority for comparing different typeof's is:
-         * number < boolean < string < (object or symbol)
+         * number < boolean < string < object < undefined
          */
             var typeof1, typeof2;
             if (aa === bb) {
                 return 0;
+            }
+            // handle undefined case
+            if (aa === undefined) {
+                return 1;
+            }
+            if (bb === undefined) {
+                return -1;
             }
             typeof1 = typeof aa;
             typeof2 = typeof bb;
@@ -150,14 +170,14 @@
                 tmp = node && compare(node.key, bb);
             }
             sentinel = node || sentinel;
-            // traverse tree starting at top of stack
+            // begin traversal with first node with key >= aa
             while (stack.length) {
                 node = stack.pop();
                 tmp = compare(node.key, bb);
                 if (compare(node.key, aa) >= 0 && compare(node.key, bb) <= 0) {
                     fnc(node);
                 }
-                // reached end of key-range
+                // end traversal with last node with key <= bb
                 if (node === sentinel) {
                     return;
                 }
@@ -171,69 +191,63 @@
             }
         };
 
-        fixsize = function (tree) {
-        //setting up a proper size of the tree
-            tree.size = getsize(tree.left) + getsize(tree.right) + 1;
-        };
-
-        getsize = function (tree) {
-        // a wrapper for size field. It operates with empty trees (tt=NULL)
-            if (!tree) {
-                return null;
-            }
-            return tree.size;
-        };
-
         insert = function (tree, key, data) {
         /*
-         * this function will randomly insert a new node into the tree
-         * with the given key and data
+         * this function will insert a new node in the tree with the given key and data,
+         * with random re-balancing
          */
             if (!tree) {
                 return create(key, data);
             }
             if (Math.floor(Math.random() * 0x10000000000000) % (tree.size + 1) === 0 &&
                     typeof key !== 'object') {
-                return insertRoot(tree, key, data);
+                return insertAsRoot(tree, key, data);
             }
             if (compare(key, tree.key) === -1) {
                 tree.left = insert(tree.left, key, data);
             } else {
                 tree.right = insert(tree.right, key, data);
             }
-            fixsize(tree);
+            sizeUpdate(tree);
             return tree;
         };
 
-        insertRoot = function (tree, key, data) {
-        // inserting a new node with key in tree tree
+        insertAsRoot = function (tree, key, data) {
+        /*
+         * this function will insert a new node in the tree with the given key and data,
+         * and rebalance it as the root node
+         */
             if (!tree) {
                 return create(key, data);
             }
             if (compare(key, tree.key) === -1) {
-                tree.left = insertRoot(tree.left, key, data);
+                tree.left = insertAsRoot(tree.left, key, data);
                 return rotateRight(tree);
             }
-            tree.right = insertRoot(tree.right, key, data);
+            tree.right = insertAsRoot(tree.right, key, data);
             return rotateLeft(tree);
         };
 
-        join = function (pp, qq) {
-        // joining two trees
-            if (!pp) {
-                return qq;
+        join = function (left, right) {
+        /*
+         * this function will join the left and right trees after deleting their parent tree
+         */
+            if (!left) {
+                return right;
             }
-            if (!qq) {
-                return pp;
+            if (!right) {
+                return left;
             }
-            if (Math.floor(Math.random() * 0x10000000000000) % (pp.size + qq.size) < pp.size) {
-                pp.right = join(pp.right, qq);
-                fixsize(pp);
-                return pp;
+            // left is heavy, so move it up
+            if (left.size > right.size) {
+                left.right = join(left.right, right);
+                sizeUpdate(left);
+                return left;
             }
-            qq.left = join(pp, qq.left);
-            fixsize(qq);
-            return qq;
+            // right is heavy, so move it up
+            right.left = join(left, right.left);
+            sizeUpdate(right);
+            return right;
         };
 
         print = function (tree) {
@@ -250,103 +264,100 @@
                 if (depth > height) {
                     height = depth;
                 }
-                console.log('(' + ii + ',' + (depth.length / 2) + ') ' + depth +
-                    JSON.stringify(tree.key));
+                console.log('(' + ii + ',' + (depth.length / 2) + ',' + tree.size + ') ' +
+                    depth + JSON.stringify(tree.key));
                 recurse(tree.right, depth + '* ');
             };
             height = '';
             ii = -1;
-            console.log('\ntree\n(ii,depth) key');
+            console.log('\ntree\n(ii,depth,size) key');
             recurse(tree, '');
             console.log('height = ' + height.length / 2);
         };
 
-        remove = function (pp, key) {
-        // deleting from pp tree the first found node with key
-            var qq;
-            if (!pp) {
-                return pp;
+        remove = function (tree, key) {
+        /*
+         * this function will remove the node in the tree with the given key
+         */
+            if (!tree) {
+                return tree;
             }
-            if (pp.key === key) {
-                qq = join(pp.left, pp.right);
-                return qq;
+            if (tree.key === key) {
+                return join(tree.left, tree.right);
             }
-            if (compare(key, pp.key) === -1) {
-                pp.left = remove(pp.left, key);
+            if (compare(key, tree.key) === -1) {
+                tree.left = remove(tree.left, key);
             } else {
-                pp.right = remove(pp.right, key);
+                tree.right = remove(tree.right, key);
             }
-            return pp;
+            sizeUpdate(tree);
+            return tree;
         };
 
-        rotateLeft = function (qq) {
+        rotateLeft = function (tree) {
         /*
-         * this function will rotate-left qq with qq.right
+         * this function will rotate-left tree.right up to its parent tree's position
          */
-            var pp;
-            pp = qq.right;
-            qq.right = pp.left;
-            pp.left = qq;
-            pp.size = qq.size;
-            fixsize(qq);
-            return pp;
+            var right;
+            right = tree.right;
+            tree.right = right.left;
+            sizeUpdate(tree);
+            right.left = tree;
+            sizeUpdate(right);
+            return right;
         };
 
-        rotateRight = function (pp) {
+        rotateRight = function (tree) {
         /*
-         * this function will rotate-right pp with pp.left
+         * this function will rotate-right tree.left up to its parent tree's position
          */
-            var qq;
-            qq = pp.left;
-            pp.left = qq.right;
-            qq.right = pp;
-            qq.size = pp.size;
-            fixsize(pp);
-            return qq;
+            var left;
+            left = tree.left;
+            tree.left = left.right;
+            sizeUpdate(tree);
+            left.right = tree;
+            sizeUpdate(left);
+            return left;
+        };
+
+        sizeUpdate = function (tree) {
+        /*
+         * this function will update tree.size
+         */
+            tree.size = 1 +
+                ((tree.left && tree.left.size) || 0) +
+                ((tree.right && tree.right.size) || 0);
         };
 
         // init local
-        local = {};
-        local.compare = compare;
-        local.create = create;
-        local.find = find;
-        local.findInKeyRange = findInKeyRange;
-        local.insert = insert;
-        local.print = print;
-        local.remove = remove;
-
-        // globall export local
-        /* istanbul ignore next */
-        if (typeof global === 'object' && global) {
-            global.rbst_lite = local;
-        }
-        /* istanbul ignore next */
-        if (typeof window === 'object' && window) {
-            window.rbst_lite = local;
-        }
-    }());
+        local.rbstCompare = compare;
+        local.rbstCreate = create;
+        local.rbstFind = find;
+        local.rbstFindInKeyRange = findInKeyRange;
+        local.rbstInsert = insert;
+        local.rbstPrint = print;
+        local.rbstRemove = remove;
+    }(local));
 
 
 
     // run browser js-env code - test
-    (function () {
-        var assert, local, testRun;
+    (function (local) {
+        var assert, testCase_rbst_default;
 
         assert = function (passed, data) {
         /*
-         * this function will, if passed is falsey, throw an error with the data
+         * this function will, if passed is falsey, throw an error with the given data
          */
             if (!passed) {
                 throw new Error(JSON.stringify(data));
             }
         };
 
-        testRun = function () {
-            var data, ii, tree;
+        local.testCase_rbst_default = function (options, onError) {
+            options = options || {};
             // create tree
-            tree = local.create(null, null);
-
-            // insert
+            options.tree = local.rbstCreate(null, null);
             [
                 -1, -0.5, 0, 0, 1, 2, 3,
                 false, true,
@@ -358,179 +369,99 @@
                     return Math.floor(Math.random() * 3) - 1;
                 })
                 .forEach(function (key, data) {
-                    tree = local.insert(tree, key, data);
+                    // insert
+                    options.tree = local.rbstInsert(options.tree, key, data);
                 });
-
             // find
             console.log('\nfind 0');
-            data = local.find(tree, 0);
-            console.log(data);
-            assert(data.key === 0, data);
-
+            options.data = local.rbstFind(options.tree, 0);
+            console.log(options.data);
+            assert(options.data.key === 0, options.data);
             console.log('\nfind undefined');
-            data = local.find(tree, 'undefined');
-            console.log(data);
-            assert(data === null, data);
-
+            options.data = local.rbstFind(options.tree, 'undefined');
+            console.log(options.data);
+            assert(options.data === null, options.data);
             // findInKeyRange
             console.log('\nfindInKeyRange [0, Infinity]');
-            data = [];
-            local.findInKeyRange(tree, 0, Infinity, function (node) {
-                data.push(node.key);
+            options.data = [];
+            local.rbstFindInKeyRange(options.tree, 0, Infinity, function (node) {
+                options.data.push(node.key);
             });
-            console.log(data);
-            assert(JSON.stringify(data) === '[0,0,1,2,3]', data);
-
+            console.log(options.data);
+            assert(JSON.stringify(options.data) === '[0,0,1,2,3]', options.data);
             // print
-            local.print(tree);
+            local.rbstPrint(options.tree);
             // output:
-            // tree
+            // options.tree
             // (ii,depth) key
-            // (0,3) *   *   *   -1
-            // (1,2) *   *   -0.5
-            // (2,4) *   *   *   *   0
-            // (3,3) *   *   *   0
-            // (4,1) *   1
-            // (5,2) *   *   2
-            // (6,0) 3
-            // (7,1) *   false
-            // (8,4) *   *   *   *   true
-            // (9,3) *   *   *   "-1"
-            // (10,5) *   *   *   *   *   "0"
-            // (11,4) *   *   *   *   "1"
-            // (12,2) *   *   "a"
-            // (13,3) *   *   *   "b"
-            // (14,4) *   *   *   *   null
-            // (15,6) *   *   *   *   *   *   []
-            // (16,7) *   *   *   *   *   *   *   null
-            // (17,8) *   *   *   *   *   *   *   *   {}
-            // (18,5) *   *   *   *   *   undefined
-            // height = 8
-
-            // coverage-hack
+            // (0,3) * * * -1
+            // (1,2) * * -0.5
+            // (2,5) * * * * * 0
+            // (3,4) * * * * 0
+            // (4,3) * * * 1
+            // (5,1) * 2
+            // (6,3) * * * 3
+            // (7,2) * * false
+            // (8,0) true
+            // (9,3) * * * "-1"
+            // (10,5) * * * * * "0"
+            // (11,4) * * * * "1"
+            // (12,2) * * "a"
+            // (13,1) * "b"
+            // (14,2) * * null
+            // (15,3) * * * []
+            // (16,4) * * * * null
+            // (17,6) * * * * * * {}
+            // (18,5) * * * * * undefined
+            // height = 6
+            // remove
+            options.tree = local.rbstRemove(options.tree, true);
+            // print
+            local.rbstPrint(options.tree);
+            // coverage-hack - assert
             try {
                 assert(false);
             } catch (ignore) {
             }
-            local.findInKeyRange(null, null, null, console.log);
-            for (ii = 0; ii < 0x100; ii += 1) {
-                // insert
+            // coverage-hack - compare
+            options.symbolCreate = Symbol;
+            options.data = local.rbstCompare({}, options.symbolCreate());
+            assert(options.data === 0, options.data);
+            // coverage-hack - remove
+            options.tree = local.rbstRemove();
+            local.rbstFindInKeyRange(null, null, null, console.log);
+            for (options.ii = 0; options.ii < 0x100; options.ii += 1) {
+                // coverage-hack - insert
                 if (Math.random() >= 0.5) {
-                    tree = local.insert(tree, ii, 'data' + ii);
+                    options.tree = local.rbstInsert(
+                        options.tree,
+                        options.ii,
+                        'options.data' + options.ii
+                    );
                 }
+                // coverage-hack - find
+                local.rbstFind(options.tree, 'options.data' + options.ii);
+                local.rbstFindInKeyRange(options.tree, -Infinity, undefined, assert);
+            }
+            options.data = [];
+            local.rbstFindInKeyRange(options.tree, 0.5, 256.5, function (node) {
+                options.data.push(node);
+            });
+            options.data.forEach(function (node) {
                 // remove
                 if (Math.random() >= 0.5) {
-                    tree = local.remove(tree, ii);
+                    options.tree = local.rbstRemove(options.tree, node.key);
                 }
-                // find
-                local.find(tree, 'data' + ii);
-            }
-
+            });
             // print
-            // local.print(tree);
-            // output:
-            // tree
-            // (ii,depth) key
-            // (0,3) * * * -1
-            // (1,2) * * -0.5
-            // (2,7) * * * * * * * 0
-            // (3,8) * * * * * * * * 1
-            // (4,6) * * * * * * 1
-            // (5,5) * * * * * 2
-            // (6,4) * * * * 2
-            // (7,6) * * * * * * 5
-            // (8,7) * * * * * * * 11
-            // (9,5) * * * * * 18
-            // (10,6) * * * * * * 20
-            // (11,3) * * * 21
-            // (12,8) * * * * * * * * 22
-            // (13,11) * * * * * * * * * * * 23
-            // (14,12) * * * * * * * * * * * * 30
-            // (15,10) * * * * * * * * * * 37
-            // (16,9) * * * * * * * * * 46
-            // (17,10) * * * * * * * * * * 48
-            // (18,7) * * * * * * * 53
-            // (19,8) * * * * * * * * 56
-            // (20,11) * * * * * * * * * * * 58
-            // (21,10) * * * * * * * * * * 70
-            // (22,9) * * * * * * * * * 71
-            // (23,10) * * * * * * * * * * 81
-            // (24,6) * * * * * * 82
-            // (25,5) * * * * * 83
-            // (26,4) * * * * 89
-            // (27,7) * * * * * * * 91
-            // (28,6) * * * * * * 92
-            // (29,7) * * * * * * * 93
-            // (30,5) * * * * * 94
-            // (31,6) * * * * * * 95
-            // (32,8) * * * * * * * * 99
-            // (33,7) * * * * * * * 102
-            // (34,1) * 103
-            // (35,4) * * * * 106
-            // (36,6) * * * * * * 115
-            // (37,5) * * * * * 120
-            // (38,6) * * * * * * 123
-            // (39,7) * * * * * * * 125
-            // (40,3) * * * 128
-            // (41,4) * * * * 132
-            // (42,5) * * * * * 144
-            // (43,6) * * * * * * 147
-            // (44,2) * * 152
-            // (45,3) * * * 153
-            // (46,4) * * * * 155
-            // (47,0) 156
-            // (48,4) * * * * 158
-            // (49,6) * * * * * * 167
-            // (50,7) * * * * * * * 169
-            // (51,5) * * * * * 170
-            // (52,7) * * * * * * * 177
-            // (53,6) * * * * * * 179
-            // (54,3) * * * 181
-            // (55,2) * * 183
-            // (56,6) * * * * * * 184
-            // (57,7) * * * * * * * 187
-            // (58,5) * * * * * 189
-            // (59,4) * * * * 190
-            // (60,5) * * * * * 191
-            // (61,3) * * * 193
-            // (62,9) * * * * * * * * * 196
-            // (63,8) * * * * * * * * 199
-            // (64,9) * * * * * * * * * 201
-            // (65,7) * * * * * * * 202
-            // (66,6) * * * * * * 222
-            // (67,7) * * * * * * * 227
-            // (68,5) * * * * * 229
-            // (69,7) * * * * * * * 234
-            // (70,8) * * * * * * * * 236
-            // (71,6) * * * * * * 238
-            // (72,7) * * * * * * * 243
-            // (73,4) * * * * 245
-            // (74,7) * * * * * * * false
-            // (75,10) * * * * * * * * * * true
-            // (76,9) * * * * * * * * * "-1"
-            // (77,8) * * * * * * * * "0"
-            // (78,6) * * * * * * "1"
-            // (79,7) * * * * * * * "a"
-            // (80,8) * * * * * * * * "b"
-            // (81,5) * * * * * null
-            // (82,6) * * * * * * []
-            // (83,7) * * * * * * * null
-            // (84,8) * * * * * * * * {}
-            // (85,1) * undefined
-            // height = 12
+            // local.rbstPrint(options.tree);
+            onError();
         };
 
-        // globall import local
-        /* istanbul ignore next */
-        if (typeof global === 'object' && global) {
-            local = global.rbst_lite;
-        }
-        /* istanbul ignore next */
-        if (typeof window === 'object' && window) {
-            local = window.rbst_lite;
-        }
-
         // run test
-        testRun();
-    }());
+        local.testCase_rbst_default(null, function (error) {
+            // validate no error occurred
+            console.assert(!error, error);
+        });
+    }(local));
 }());
