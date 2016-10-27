@@ -1,0 +1,576 @@
+<style>
+.docApiDiv {
+    font-family: Arial, Helvetica, sans-serif;
+}
+.docApiDiv a[href] {
+    color: #33f;
+    font-weight: bold;
+    text-decoration: none;
+}
+.docApiDiv a[href]:hover {
+    text-decoration: underline;
+}
+.docApiSectionDiv {
+    border-top: 1px solid;
+    margin-top: 20px;
+}
+.docApiCodeCommentSpan {
+    background-color: #bbf;
+    color: #000;
+    display: block;
+}
+.docApiCodeKeywordSpan {
+    color: #f00;
+    font-weight: bold;
+}
+.docApiCodePre {
+    background-color: #eef;
+    border: 1px solid;
+    color: #777;
+    padding: 5px;
+    white-space: pre-wrap;
+}
+.docApiSignatureSpan {
+    color: #777;
+    font-weight: bold;
+}
+</style>
+<div class="docApiDiv">
+<h1>api documentation
+    <a
+        
+        href="https://github.com/kaizhu256/node-rbst-lite"
+        
+    >(rbst-lite v2016.10.09)</a>
+</h1>
+<div class="docApiSectionDiv"><a href="#"><h1>table of contents</h1></a><ul>
+
+    <li><a href="#module.rbst-lite">module rbst-lite</a><ol>
+        
+        <li>
+            
+            <a class="docApiElementLiA" href="#element.rbst-lite.rbstCompare">
+            function <span class="docApiSignatureSpan">rbst-lite.</span>rbstCompare
+            <span class="docApiSignatureSpan">(aa,
+ bb)</span>
+            </a>
+            
+        </li>
+        
+        <li>
+            
+            <a class="docApiElementLiA" href="#element.rbst-lite.rbstCreate">
+            function <span class="docApiSignatureSpan">rbst-lite.</span>rbstCreate
+            <span class="docApiSignatureSpan">(key,
+ data)</span>
+            </a>
+            
+        </li>
+        
+        <li>
+            
+            <a class="docApiElementLiA" href="#element.rbst-lite.rbstFind">
+            function <span class="docApiSignatureSpan">rbst-lite.</span>rbstFind
+            <span class="docApiSignatureSpan">(tree,
+ key)</span>
+            </a>
+            
+        </li>
+        
+        <li>
+            
+            <a class="docApiElementLiA" href="#element.rbst-lite.rbstFindInKeyRange">
+            function <span class="docApiSignatureSpan">rbst-lite.</span>rbstFindInKeyRange
+            <span class="docApiSignatureSpan">(tree,
+ aa,
+ bb,
+ fnc)</span>
+            </a>
+            
+        </li>
+        
+        <li>
+            
+            <a class="docApiElementLiA" href="#element.rbst-lite.rbstInsert">
+            function <span class="docApiSignatureSpan">rbst-lite.</span>rbstInsert
+            <span class="docApiSignatureSpan">(tree,
+ key,
+ data)</span>
+            </a>
+            
+        </li>
+        
+        <li>
+            
+            <a class="docApiElementLiA" href="#element.rbst-lite.rbstPrint">
+            function <span class="docApiSignatureSpan">rbst-lite.</span>rbstPrint
+            <span class="docApiSignatureSpan">(tree)</span>
+            </a>
+            
+        </li>
+        
+        <li>
+            
+            <a class="docApiElementLiA" href="#element.rbst-lite.rbstRemove">
+            function <span class="docApiSignatureSpan">rbst-lite.</span>rbstRemove
+            <span class="docApiSignatureSpan">(tree,
+ key)</span>
+            </a>
+            
+        </li>
+        
+        <li>
+            
+            <span class="docApiSignatureSpan">number <span class="docApiSignatureSpan">rbst-lite.</span>modeTest</span>
+        
+        </li>
+        
+        <li>
+            
+            <span class="docApiSignatureSpan">object <span class="docApiSignatureSpan">rbst-lite.</span>fs</span>
+        
+        </li>
+        
+        <li>
+            
+            <span class="docApiSignatureSpan">object <span class="docApiSignatureSpan">rbst-lite.</span>onReadyAfter</span>
+        
+        </li>
+        
+        <li>
+            
+            <span class="docApiSignatureSpan">object <span class="docApiSignatureSpan">rbst-lite.</span>utility2</span>
+        
+        </li>
+        
+        <li>
+            
+            <span class="docApiSignatureSpan">string <span class="docApiSignatureSpan">rbst-lite.</span>modeJs</span>
+        
+        </li>
+        
+    </ol></li>
+
+</ul></div>
+    
+    <div class="docApiSectionDiv">
+    <h1><a href="#module.rbst-lite" id="module.rbst-lite">module rbst-lite</a></h1>
+        
+        
+        <h2>
+            <a href="#element.rbst-lite.rbstCompare" id="element.rbst-lite.rbstCompare">
+            function <span class="docApiSignatureSpan">rbst-lite.</span>rbstCompare
+            <span class="docApiSignatureSpan">(aa,
+ bb)</span>
+            </a>
+        </h2>
+        <ul>
+        <li>description and source code<pre class="docApiCodePre">rbstCompare = function (aa,
+ bb) {
+<span class="docApiCodeCommentSpan">/*
+ * this function will compare aa vs bb and return:
+ * -1 if aa &lt; bb
+ *  0 if aa === bb
+ *  1 if aa &gt; bb
+ * the priority for comparing different typeof&#x27;s is:
+ * number &lt; boolean &lt; string &lt; object &lt; undefined
+ */
+</span>    var typeof1, typeof2;
+    if (aa === bb) {
+        return 0;
+    }
+    // handle undefined case
+    if (aa === undefined) {
+        return 1;
+    }
+    if (bb === undefined) {
+        return -1;
+    }
+    typeof1 = typeof aa;
+    typeof2 = typeof bb;
+    if (typeof1 === typeof2) {
+        return typeof1 === &#x27;object&#x27;
+            ? 0
+            : aa &lt; bb
+            ? -1
+            : 1;
+    }
+    if (typeof1 === &#x27;number&#x27;) {
+        return -1;
+    }
+    if (typeof2 === &#x27;number&#x27;) {
+        return 1;
+    }
+    if (typeof1 === &#x27;boolean&#x27;) {
+        return -1;
+    }
+    if (typeof2 === &#x27;boolean&#x27;) {
+        return 1;
+    }
+    if (typeof1 === &#x27;string&#x27;) {
+        return -1;
+    }
+    if (typeof2 === &#x27;string&#x27;) {
+        return 1;
+    }
+    return 0;
+}</pre></li>
+        <li>example usage<pre class="docApiCodePre">...
+// coverage-hack - assert
+try {
+    assert(false);
+} catch (ignore) {
+}
+// coverage-hack - compare
+options.symbolCreate = Symbol;
+options.data = local.<span class="docApiCodeKeywordSpan">rbstCompare</span>({}, options.symbolCreate());
+assert(options.data === 0, options.data);
+// coverage-hack - remove
+options.tree = local.rbstRemove();
+local.rbstFindInKeyRange(null, null, null, console.log);
+for (options.ii = 0; options.ii &lt; 0x100; options.ii += 1) {
+    // coverage-hack - insert
+    if (Math.random() &gt;= 0.5) {
+...</pre></li>
+        </ul>
+        
+        
+        
+        <h2>
+            <a href="#element.rbst-lite.rbstCreate" id="element.rbst-lite.rbstCreate">
+            function <span class="docApiSignatureSpan">rbst-lite.</span>rbstCreate
+            <span class="docApiSignatureSpan">(key,
+ data)</span>
+            </a>
+        </h2>
+        <ul>
+        <li>description and source code<pre class="docApiCodePre">rbstCreate = function (key,
+ data) {
+<span class="docApiCodeCommentSpan">/*
+ * this function will create a tree with the given key and data
+ */
+</span>    return {
+        key: key,
+        data: data,
+        left: null,
+        right: null,
+        size: 1
+    };
+}</pre></li>
+        <li>example usage<pre class="docApiCodePre">...
+        throw new Error(JSON.stringify(data));
+    }
+};
+
+testCase_rbst_default = function (options, onError) {
+    options = options || {};
+    // create tree
+    options.tree = local.<span class="docApiCodeKeywordSpan">rbstCreate</span>(null, null);
+    [
+        -1, -0.5, 0, 0, 1, 2, 3,
+        false, true,
+        &#x27;-1&#x27;, &#x27;0&#x27;, &#x27;1&#x27;, &#x27;a&#x27;, &#x27;b&#x27;,
+        null, undefined, {}, []
+    ]
+        // shuffle list
+...</pre></li>
+        </ul>
+        
+        
+        
+        <h2>
+            <a href="#element.rbst-lite.rbstFind" id="element.rbst-lite.rbstFind">
+            function <span class="docApiSignatureSpan">rbst-lite.</span>rbstFind
+            <span class="docApiSignatureSpan">(tree,
+ key)</span>
+            </a>
+        </h2>
+        <ul>
+        <li>description and source code<pre class="docApiCodePre">rbstFind = function (tree,
+ key) {
+<span class="docApiCodeCommentSpan">/*
+ * this function will find the node in the tree with the given key
+ */
+</span>    var node, tmp;
+    node = tree;
+    tmp = node &amp;&amp; compare(node.key, key);
+    while (tmp) {
+        node = tmp === -1
+            ? node.right
+            : node.left;
+        tmp = node &amp;&amp; compare(node.key, key);
+    }
+    return node;
+}</pre></li>
+        <li>example usage<pre class="docApiCodePre">...
+    })
+    .forEach(function (key, data) {
+        // insert
+        options.tree = local.rbstInsert(options.tree, key, data);
+    });
+// find
+console.log(&#x27;\nfind 0&#x27;);
+options.data = local.<span class="docApiCodeKeywordSpan">rbstFind</span>(options.tree, 0);
+console.log(options.data);
+assert(options.data.key === 0, options.data);
+console.log(&#x27;\nfind undefined&#x27;);
+options.data = local.rbstFind(options.tree, &#x27;undefined&#x27;);
+console.log(options.data);
+assert(options.data === null, options.data);
+// findInKeyRange
+...</pre></li>
+        </ul>
+        
+        
+        
+        <h2>
+            <a href="#element.rbst-lite.rbstFindInKeyRange" id="element.rbst-lite.rbstFindInKeyRange">
+            function <span class="docApiSignatureSpan">rbst-lite.</span>rbstFindInKeyRange
+            <span class="docApiSignatureSpan">(tree,
+ aa,
+ bb,
+ fnc)</span>
+            </a>
+        </h2>
+        <ul>
+        <li>description and source code<pre class="docApiCodePre">rbstFindInKeyRange = function (tree,
+ aa,
+ bb,
+ fnc) {
+<span class="docApiCodeCommentSpan">/*
+ * this function will iteratively call fnc on all nodes in the tree,
+ * with keys in the inclusive key-range [aa, bb]
+ */
+</span>    var node, sentinel, stack, tmp, traversedList;
+    if (!tree) {
+        return;
+    }
+    // find first node with key &gt;= aa
+    node = tree;
+    stack = [node];
+    tmp = node &amp;&amp; compare(node.key, aa);
+    while (node) {
+        stack.push(node);
+        node = tmp === -1
+            ? node.right
+            : node.left;
+        tmp = node &amp;&amp; compare(node.key, aa);
+    }
+    traversedList = stack.slice();
+    // find last node with key &lt;= bb
+    sentinel = null;
+    node = tree;
+    tmp = compare(node.key, bb);
+    while (node) {
+        sentinel = node;
+        node = tmp === 1
+            ? node.left
+            : node.right;
+        tmp = node &amp;&amp; compare(node.key, bb);
+    }
+    sentinel = node || sentinel;
+    // begin traversal with first node with key &gt;= aa
+    while (stack.length) {
+        node = stack.pop();
+        tmp = compare(node.key, bb);
+        if (compare(node.key, aa) &gt;= 0 &amp;&amp; compare(node.key, bb) &lt;= 0) {
+            fnc(node);
+        }
+        // end traversal with last node with key &lt;= bb
+        if (node === sentinel) {
+            return;
+        }
+        node = node.right;
+        if (traversedList.indexOf(node) &lt; 0) {
+            while (node) {
+                stack.push(node);
+                node = node.left;
+            }
+        }
+    }
+}</pre></li>
+        <li>example usage<pre class="docApiCodePre">...
+console.log(&#x27;\nfind undefined&#x27;);
+options.data = local.rbstFind(options.tree, &#x27;undefined&#x27;);
+console.log(options.data);
+assert(options.data === null, options.data);
+// findInKeyRange
+console.log(&#x27;\nfindInKeyRange [0, Infinity]&#x27;);
+options.data = [];
+local.<span class="docApiCodeKeywordSpan">rbstFindInKeyRange</span>(options.tree, 0, Infinity, function (node) {
+    options.data.push(node.key);
+});
+console.log(options.data);
+assert(JSON.stringify(options.data) === &#x27;[0,0,1,2,3]&#x27;, options.data);
+// print
+local.rbstPrint(options.tree);
+// output:
+...</pre></li>
+        </ul>
+        
+        
+        
+        <h2>
+            <a href="#element.rbst-lite.rbstInsert" id="element.rbst-lite.rbstInsert">
+            function <span class="docApiSignatureSpan">rbst-lite.</span>rbstInsert
+            <span class="docApiSignatureSpan">(tree,
+ key,
+ data)</span>
+            </a>
+        </h2>
+        <ul>
+        <li>description and source code<pre class="docApiCodePre">rbstInsert = function (tree,
+ key,
+ data) {
+<span class="docApiCodeCommentSpan">/*
+ * this function will insert a new node in the tree with the given key and data,
+ * with random re-balancing
+ */
+</span>    if (!tree) {
+        return create(key, data);
+    }
+    if (Math.floor(Math.random() * 0x10000000000000) % (tree.size + 1) === 0 &amp;&amp;
+            typeof key !== &#x27;object&#x27;) {
+        return insertAsRoot(tree, key, data);
+    }
+    if (compare(key, tree.key) === -1) {
+        tree.left = insert(tree.left, key, data);
+    } else {
+        tree.right = insert(tree.right, key, data);
+    }
+    sizeUpdate(tree);
+    return tree;
+}</pre></li>
+        <li>example usage<pre class="docApiCodePre">...
+]
+    // shuffle list
+    .sort(function () {
+        return Math.floor(Math.random() * 3) - 1;
+    })
+    .forEach(function (key, data) {
+        // insert
+        options.tree = local.<span class="docApiCodeKeywordSpan">rbstInsert</span>(options.tree, key, data);
+    });
+// find
+console.log(&#x27;\nfind 0&#x27;);
+options.data = local.rbstFind(options.tree, 0);
+console.log(options.data);
+assert(options.data.key === 0, options.data);
+console.log(&#x27;\nfind undefined&#x27;);
+...</pre></li>
+        </ul>
+        
+        
+        
+        <h2>
+            <a href="#element.rbst-lite.rbstPrint" id="element.rbst-lite.rbstPrint">
+            function <span class="docApiSignatureSpan">rbst-lite.</span>rbstPrint
+            <span class="docApiSignatureSpan">(tree)</span>
+            </a>
+        </h2>
+        <ul>
+        <li>description and source code<pre class="docApiCodePre">rbstPrint = function (tree) {
+<span class="docApiCodeCommentSpan">/*
+ * this function will print the tree
+ */
+</span>    var height, ii, recurse;
+    recurse = function (tree, depth) {
+        if (!tree) {
+            return;
+        }
+        recurse(tree.left, depth + &#x27;* &#x27;);
+        ii += 1;
+        if (depth &gt; height) {
+            height = depth;
+        }
+        console.log(&#x27;(&#x27; + ii + &#x27;,&#x27; + (depth.length / 2) + &#x27;,&#x27; + tree.size + &#x27;) &#x27; +
+            depth + JSON.stringify(tree.key));
+        recurse(tree.right, depth + &#x27;* &#x27;);
+    };
+    height = &#x27;&#x27;;
+    ii = -1;
+    console.log(&#x27;\ntree\n(ii,depth,size) key&#x27;);
+    recurse(tree, &#x27;&#x27;);
+    console.log(&#x27;height = &#x27; + height.length / 2);
+}</pre></li>
+        <li>example usage<pre class="docApiCodePre">...
+options.data = [];
+local.rbstFindInKeyRange(options.tree, 0, Infinity, function (node) {
+    options.data.push(node.key);
+});
+console.log(options.data);
+assert(JSON.stringify(options.data) === &#x27;[0,0,1,2,3]&#x27;, options.data);
+// print
+local.<span class="docApiCodeKeywordSpan">rbstPrint</span>(options.tree);
+// output:
+// options.tree
+// (ii,depth) key
+// (0,3) * * * -1
+// (1,2) * * -0.5
+// (2,5) * * * * * 0
+// (3,4) * * * * 0
+...</pre></li>
+        </ul>
+        
+        
+        
+        <h2>
+            <a href="#element.rbst-lite.rbstRemove" id="element.rbst-lite.rbstRemove">
+            function <span class="docApiSignatureSpan">rbst-lite.</span>rbstRemove
+            <span class="docApiSignatureSpan">(tree,
+ key)</span>
+            </a>
+        </h2>
+        <ul>
+        <li>description and source code<pre class="docApiCodePre">rbstRemove = function (tree,
+ key) {
+<span class="docApiCodeCommentSpan">/*
+ * this function will remove the node in the tree with the given key
+ */
+</span>    if (!tree) {
+        return tree;
+    }
+    if (tree.key === key) {
+        return join(tree.left, tree.right);
+    }
+    if (compare(key, tree.key) === -1) {
+        tree.left = remove(tree.left, key);
+    } else {
+        tree.right = remove(tree.right, key);
+    }
+    sizeUpdate(tree);
+    return tree;
+}</pre></li>
+        <li>example usage<pre class="docApiCodePre">...
+// (14,2) * * null
+// (15,3) * * * []
+// (16,4) * * * * null
+// (17,6) * * * * * * {}
+// (18,5) * * * * * undefined
+// height = 6
+// remove
+options.tree = local.<span class="docApiCodeKeywordSpan">rbstRemove</span>(options.tree, true);
+// print
+local.rbstPrint(options.tree);
+// coverage-hack - assert
+try {
+    assert(false);
+} catch (ignore) {
+}
+...</pre></li>
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    </div>
+    
+</div>
