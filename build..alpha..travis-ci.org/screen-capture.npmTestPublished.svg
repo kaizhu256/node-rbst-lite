@@ -1,8 +1,8 @@
-<svg height="1294" width="720" xmlns="http://www.w3.org/2000/svg">
-<rect height="1294" fill="#555" width="720"></rect>
+<svg height="1374" width="720" xmlns="http://www.w3.org/2000/svg">
+<rect height="1374" fill="#555" width="720"></rect>
 <text fill="#7f7" font-family="Courier New" font-size="12" xml:space="preserve">
 <tspan x="10" y="26"></tspan>
-<tspan x="10" y="42">[MODE_BUILD=npmTestPublished] - 2016-10-27T16:28:38Z - npm-testing published-package rbst-lite</tspan>
+<tspan x="10" y="42">[MODE_BUILD=npmTestPublished] - 2016-10-27T16:32:01Z - npm-testing published-package rbst-lite</tspan>
 <tspan x="10" y="58"></tspan>
 <tspan x="10" y="74">/tmp/app</tspan>
 <tspan x="10" y="90">└── rbst-lite@2016.10.9 </tspan>
@@ -32,53 +32,58 @@
 <tspan x="10" y="474"></tspan>
 <tspan x="10" y="490">find 0</tspan>
 <tspan x="10" y="506">{ key: 0,</tspan>
-<tspan x="10" y="522">  data: 2,</tspan>
-<tspan x="10" y="538">  left: null,</tspan>
-<tspan x="10" y="554">  right: </tspan>
-<tspan x="10" y="570">   { key: 0,</tspan>
-<tspan x="10" y="586">     data: 8,</tspan>
-<tspan x="10" y="602">     left: null,</tspan>
-<tspan x="10" y="618">     right: { key: 1, data: 10, left: null, right: [Object], size: 2 },</tspan>
-<tspan x="10" y="634">     size: 3 },</tspan>
-<tspan x="10" y="650">  size: 4 }</tspan>
-<tspan x="10" y="666"></tspan>
-<tspan x="10" y="682">find undefined</tspan>
-<tspan x="10" y="698">null</tspan>
-<tspan x="10" y="714"></tspan>
-<tspan x="10" y="730">findInKeyRange [0, Infinity]</tspan>
-<tspan x="10" y="746">[ 0, 0, 1, 2, 3 ]</tspan>
-<tspan x="10" y="762"></tspan>
-<tspan x="10" y="778">tree</tspan>
-<tspan x="10" y="794">(ii,depth) key</tspan>
-<tspan x="10" y="810">(0,2) * * -1</tspan>
-<tspan x="10" y="826">(1,1) * -0.5</tspan>
-<tspan x="10" y="842">(2,2) * * 0</tspan>
-<tspan x="10" y="858">(3,3) * * * 0</tspan>
-<tspan x="10" y="874">(4,4) * * * * 1</tspan>
-<tspan x="10" y="890">(5,5) * * * * * 2</tspan>
-<tspan x="10" y="906">(6,0) 3</tspan>
-<tspan x="10" y="922">(7,3) * * * false</tspan>
-<tspan x="10" y="938">(8,6) * * * * * * true</tspan>
-<tspan x="10" y="954">(9,5) * * * * * "-1"</tspan>
-<tspan x="10" y="970">(10,4) * * * * "0"</tspan>
-<tspan x="10" y="986">(11,2) * * "1"</tspan>
-<tspan x="10" y="1002">(12,3) * * * "a"</tspan>
-<tspan x="10" y="1018">(13,1) * "b"</tspan>
-<tspan x="10" y="1034">(14,2) * * null</tspan>
-<tspan x="10" y="1050">(15,3) * * * []</tspan>
-<tspan x="10" y="1066">(16,4) * * * * null</tspan>
-<tspan x="10" y="1082">(17,6) * * * * * * {}</tspan>
-<tspan x="10" y="1098">(18,5) * * * * * undefined</tspan>
-<tspan x="10" y="1114">height = 6</tspan>
-<tspan x="10" y="1130">---------------|-----------|-----------|-----------|-----------|</tspan>
-<tspan x="10" y="1146">File           |   % Stmts |% Branches |   % Funcs |   % Lines |</tspan>
-<tspan x="10" y="1162">---------------|-----------|-----------|-----------|-----------|</tspan>
-<tspan x="10" y="1178">   rbst-lite/  |       100 |       100 |       100 |       100 |</tspan>
-<tspan x="10" y="1194">      index.js |       100 |       100 |       100 |       100 |</tspan>
+<tspan x="10" y="522">  data: 15,</tspan>
+<tspan x="10" y="538">  left: </tspan>
+<tspan x="10" y="554">   { key: -1,</tspan>
+<tspan x="10" y="570">     data: 6,</tspan>
+<tspan x="10" y="586">     left: null,</tspan>
+<tspan x="10" y="602">     right: { key: -0.5, data: 11, left: null, right: [Object], size: 2 },</tspan>
+<tspan x="10" y="618">     size: 3 },</tspan>
+<tspan x="10" y="634">  right: </tspan>
+<tspan x="10" y="650">   { key: null,</tspan>
+<tspan x="10" y="666">     data: null,</tspan>
+<tspan x="10" y="682">     left: { key: 2, data: 8, left: [Object], right: [Object], size: 9 },</tspan>
+<tspan x="10" y="698">     right: { key: undefined, data: 17, left: [Object], right: null, size: 3 },</tspan>
+<tspan x="10" y="714">     size: 13 },</tspan>
+<tspan x="10" y="730">  size: 17 }</tspan>
+<tspan x="10" y="746"></tspan>
+<tspan x="10" y="762">find undefined</tspan>
+<tspan x="10" y="778">null</tspan>
+<tspan x="10" y="794"></tspan>
+<tspan x="10" y="810">findInKeyRange [0, Infinity]</tspan>
+<tspan x="10" y="826">[ 0, 0, 1, 2, 3 ]</tspan>
+<tspan x="10" y="842"></tspan>
+<tspan x="10" y="858">tree</tspan>
+<tspan x="10" y="874">(ii,depth) key</tspan>
+<tspan x="10" y="890">(0,1) * -1</tspan>
+<tspan x="10" y="906">(1,2) * * -0.5</tspan>
+<tspan x="10" y="922">(2,3) * * * 0</tspan>
+<tspan x="10" y="938">(3,0) 0</tspan>
+<tspan x="10" y="954">(4,3) * * * 1</tspan>
+<tspan x="10" y="970">(5,2) * * 2</tspan>
+<tspan x="10" y="986">(6,5) * * * * * 3</tspan>
+<tspan x="10" y="1002">(7,6) * * * * * * false</tspan>
+<tspan x="10" y="1018">(8,4) * * * * true</tspan>
+<tspan x="10" y="1034">(9,5) * * * * * "-1"</tspan>
+<tspan x="10" y="1050">(10,3) * * * "0"</tspan>
+<tspan x="10" y="1066">(11,5) * * * * * "1"</tspan>
+<tspan x="10" y="1082">(12,4) * * * * "a"</tspan>
+<tspan x="10" y="1098">(13,5) * * * * * "b"</tspan>
+<tspan x="10" y="1114">(14,1) * null</tspan>
+<tspan x="10" y="1130">(15,3) * * * {}</tspan>
+<tspan x="10" y="1146">(16,4) * * * * null</tspan>
+<tspan x="10" y="1162">(17,5) * * * * * []</tspan>
+<tspan x="10" y="1178">(18,2) * * undefined</tspan>
+<tspan x="10" y="1194">height = 6</tspan>
 <tspan x="10" y="1210">---------------|-----------|-----------|-----------|-----------|</tspan>
-<tspan x="10" y="1226">All files      |       100 |       100 |       100 |       100 |</tspan>
+<tspan x="10" y="1226">File           |   % Stmts |% Branches |   % Funcs |   % Lines |</tspan>
 <tspan x="10" y="1242">---------------|-----------|-----------|-----------|-----------|</tspan>
-<tspan x="10" y="1258"></tspan>
-<tspan x="10" y="1274">created coverage file:///tmp/app/node_modules/rbst-lite/tmp/build/coverage.html/index.html</tspan>
+<tspan x="10" y="1258">   rbst-lite/  |     99.49 |        99 |       100 |     99.49 |</tspan>
+<tspan x="10" y="1274">      index.js |     99.49 |        99 |       100 |     99.49 |</tspan>
+<tspan x="10" y="1290">---------------|-----------|-----------|-----------|-----------|</tspan>
+<tspan x="10" y="1306">All files      |     99.49 |        99 |       100 |     99.49 |</tspan>
+<tspan x="10" y="1322">---------------|-----------|-----------|-----------|-----------|</tspan>
+<tspan x="10" y="1338"></tspan>
+<tspan x="10" y="1354">created coverage file:///tmp/app/node_modules/rbst-lite/tmp/build/coverage.html/index.html</tspan>
 </text>
 </svg>
